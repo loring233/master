@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:指定接口的全限定名com.yyp.mapper.UserMapper
+    resultType返回值类型-->
+<mapper namespace="com.yyp.mapper.UserMapper">
+<!--    查询所有用户
+        resultType:返回值类型
+-->
+    <select id="selectUserAll" resultType="user">
+        select id,username,password from t_user
+    </select>
+<!--    新增用户
+        parameterType：参数类型
+-->
+    <insert id="add" parameterType="user">
+        INSERT INTO t_user(id,username,password) VALUES(#{id},#{username},#{password})
+    </insert>
+<!--修改-->
+    <update id="update" parameterType="user">
+        update t_user set username=#{username},password=#{password} where id=#{id}
+    </update>
+
+    <!--根据id删除用户-->
+    <delete id="delete" parameterType="int">
+        delete from t_user where id=#{id}
+    </delete>
+
+    <!--根据id获取用户名查询用户-->
+    <select id="selectUsersByIdAndUsername" parameterType="user" resultType="user">
+        select id,username,password from t_user
+              <where>
+                  <if test="id != null">
+                     and id=#{id}
+                  </if>
+                  <if test="username != null and username != ''">
+                      and username=#{username}
+                  </if>
+              </where>
+    </select>
+
+    <!--根据id列表查询用户-->
+    <select id="selectUsersByIds" parameterType="list" resultType="user">
+        select id,username,password from t_user
+            <where>
+                <!--collection：集合或者数组
+                item:集合中的每个元素
+                separator:拼接符
+                -->
+                <foreach collection="array" open="id in(" item="id" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </where>
+
+    </select>
+</mapper>
